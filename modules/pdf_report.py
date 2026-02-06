@@ -6,7 +6,15 @@ from datetime import datetime
 import os
 
 def generate_pdf(metrics, folder):
-    filename = f"{folder}Plato_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    filename = os.path.join(
+        folder,
+        f"Plato_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+    )
+
     doc = SimpleDocTemplate(filename)
     elements = []
 
@@ -19,6 +27,7 @@ def generate_pdf(metrics, folder):
 
     elements.append(Paragraph("Plato Capital System Report", style))
     elements.append(Spacer(1, 0.2 * inch))
+
     elements.append(Paragraph(f"Average Return: {metrics['avg_return']:.2f}", style))
     elements.append(Paragraph(f"Success Rate: {metrics['success_rate']:.2f}%", style))
     elements.append(Paragraph(f"Confidence Correlation: {metrics['confidence_corr']:.2f}", style))
@@ -27,3 +36,4 @@ def generate_pdf(metrics, folder):
     doc.build(elements)
 
     return filename
+    
